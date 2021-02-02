@@ -44,9 +44,11 @@ public class FilesController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public @ResponseBody
-    FileRecord modifyFile(@PathVariable(name = "id") Long fileId, @RequestParam(name = "contents") MultipartFile contents) throws IOException {
-        return storageService.modifyFile(fileId, contents.getInputStream());
+    public @ResponseBody FileRecord modifyFile(
+            @PathVariable(name = "id") Long fileId,
+            @RequestParam(name = "version") Integer version,
+            @RequestParam(name = "contents") MultipartFile contents) throws IOException {
+        return storageService.modifyFile(fileId, version, contents.getInputStream());
     }
 
     @RequestMapping(method = RequestMethod.GET, path="/file/{id}")
@@ -64,8 +66,8 @@ public class FilesController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/file/{id}")
-    public ResponseEntity<String> deleteFile(@PathVariable(name = "id") Long fileId) {
-        storageService.deleteFile(fileId);
+    public ResponseEntity<String> deleteFile(@PathVariable(name = "id") Long fileId, @RequestParam(name = "version") Integer version) {
+        storageService.deleteFile(fileId, version);
 
         return ResponseEntity.ok("File " + fileId + " successfully deleted");
     }
